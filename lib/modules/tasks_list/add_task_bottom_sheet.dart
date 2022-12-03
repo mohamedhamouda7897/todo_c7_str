@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo_c7_str/models/task.dart';
+import 'package:todo_c7_str/shared/network/local/firebase_utils.dart';
 import 'package:todo_c7_str/shared/styles/colors.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
@@ -101,6 +103,11 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
               onPressed: () {
                 if (keyform.currentState!.validate()) {
                   // Add task to database
+                  Task task = Task(
+                      title: titleController.text,
+                      description: descriptionController.text,
+                      date: selectedDate.microsecondsSinceEpoch);
+                  addTaskToFirebaseFireStore(task);
                 }
               },
               child: Text('Add Task'))
