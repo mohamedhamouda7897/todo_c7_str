@@ -67,8 +67,13 @@ class _HomeLayoutState extends State<HomeLayout> {
   void showAddTaskBottomSheet() {
     showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         builder: (context) {
-          return AddTaskBottomSheet();
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: AddTaskBottomSheet(),
+          );
         });
   }
 

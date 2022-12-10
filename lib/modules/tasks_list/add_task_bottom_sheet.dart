@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_c7_str/models/task.dart';
+import 'package:todo_c7_str/shared/components/components.dart';
 import 'package:todo_c7_str/shared/network/local/firebase_utils.dart';
 import 'package:todo_c7_str/shared/styles/colors.dart';
 
@@ -22,6 +23,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
       margin: EdgeInsets.symmetric(horizontal: 30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             'Add new Task',
@@ -103,11 +105,21 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
               onPressed: () {
                 if (keyform.currentState!.validate()) {
                   // Add task to database
+                  print(selectedDate);
                   Task task = Task(
                       title: titleController.text,
                       description: descriptionController.text,
-                      date: selectedDate.microsecondsSinceEpoch);
-                  addTaskToFirebaseFireStore(task);
+                      date: DateUtils.dateOnly(selectedDate)
+                          .microsecondsSinceEpoch);
+                  //  showLoading(context, 'Loading...');
+                  addTaskToFirebaseFireStore(task).then((value) {
+                    showMessage(context, 'Successfully', 'Ok', () {
+                      hideLoading(context);
+                      hideLoading(context);
+                    }, 'Task Added', false, negBtn: 'Cancel', negAction: () {});
+                  }).catchError((error) {
+                    print(error);
+                  });
                 }
               },
               child: Text('Add Task'))

@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:todo_c7_str/models/task.dart';
 
-// void addTaskToFireStore(){
-//
-//   FirebaseFirestore.instance.collection('tasks').add(data)
-// }
 CollectionReference<Task> getTasksCollection() {
   return FirebaseFirestore.instance.collection('Tasks').withConverter<Task>(
         fromFirestore: (snapshot, options) {
@@ -21,7 +18,13 @@ Future<void> addTaskToFirebaseFireStore(Task task) {
   return docRef.set(task);
 }
 
-Future<QuerySnapshot<Task>> getDataFromFireStore() {
-  var data = getTasksCollection().get();
-  return data;
+Stream<QuerySnapshot<Task>> getDataFromFirestore(DateTime dateTime) {
+  return getTasksCollection()
+      .where('date',
+          isEqualTo: DateUtils.dateOnly(dateTime).microsecondsSinceEpoch)
+      .snapshots();
+}
+
+Future<void> deleteTaskFromFireStore(String id) {
+  return getTasksCollection().doc(id).delete();
 }
